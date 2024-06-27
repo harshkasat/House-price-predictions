@@ -107,7 +107,7 @@ async def predict_price(details: HouseDetails):
 
     try:
         prediction = price_predict(details.location, details.sqft, details.bath, details.bhk)
-        return {"predicted_price": f"""₹ {prediction} thousands"""}
+        return {"predicted_price": f"""₹ {round(prediction)} thousands"""}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 

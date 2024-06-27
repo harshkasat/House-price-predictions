@@ -1,0 +1,102 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./login-signup.css">
+    <title>Real Estate Login/SignUp</title>
+</head>
+<body>
+    <div class="cont_principal">
+        <div class="cont_centrar">
+            <div class="cont_login">
+                <form id="form" onsubmit="submitForm(event)">
+                    <div class="cont_tabs_login">
+                        <ul class='ul_tabs'>
+                            <li class="active"><a href="#" onclick="sign_in(event)">SIGN IN</a>
+                                <span class="linea_bajo_nom"></span>
+                            </li>
+                            <li><a href="#" onclick="sign_up(event)">SIGN UP</a><span class="linea_bajo_nom"></span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="cont_text_inputs">
+                        <!-- <input type="text" class="input_form_sign" placeholder="NAME" name="name" id="name" /> -->
+                        <input type="text" class="input_form_sign d_block active_inp" placeholder="EMAIL" name="email" id="email" />
+                        <input type="password" class="input_form_sign d_block active_inp" placeholder="PASSWORD" name="password" id="password" />
+                        <!-- <input type="password" class="input_form_sign" placeholder="CONFIRM PASSWORD" name="confirm_password" id="confirm_password" /> -->
+                        <a href="#" class="link_forgot_pass d_block">Forgot Password ?</a>
+                        <div class="terms_and_cons d_none">
+                            <p><input type="checkbox" name="terms_and_cons" /> <label for="terms_and_cons">Accept Terms and Conditions.</label></p>
+                        </div>
+                    </div>
+                    <div class="cont_btn">
+                        <button type="submit" class="btn_sign">SIGN IN</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="./login-signup.js"></script>
+<script>
+    let isSignup = false;
+
+    function sign_up(event) {
+        event.preventDefault();
+        isSignup = true;
+        document.querySelectorAll('.ul_tabs > li')[0].classList.remove("active");
+        document.querySelectorAll('.ul_tabs > li')[1].classList.add("active");
+        document.getElementById("confirm_password").style.display = "block";
+        document.querySelector('.link_forgot_pass').style.display = "none";
+        document.querySelector('.terms_and_cons').style.display = "block";
+        document.querySelector('.btn_sign').textContent = "SIGN UP";
+    }
+
+    function sign_in(event) {
+        event.preventDefault();
+        isSignup = false;
+        document.querySelectorAll('.ul_tabs > li')[0].classList.add("active");
+        document.querySelectorAll('.ul_tabs > li')[1].classList.remove("active");
+        document.getElementById("confirm_password").style.display = "none";
+        document.querySelector('.link_forgot_pass').style.display = "block";
+        document.querySelector('.terms_and_cons').style.display = "none";
+        document.querySelector('.btn_sign').textContent = "SIGN IN";
+    }
+
+    async function submitForm(event) {
+        event.preventDefault();
+
+        const formData = new FormData(document.getElementById("form"));
+        const data = Object.fromEntries(formData.entries());
+        console.log(JSON.stringify(data));
+        const url = isSignup ? "http://localhost:8000/signup/" : "http://localhost:8000/login/";
+
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                alert(result.detail);
+            } else {
+                alert(result.message);
+                // Simulate an HTTP redirect:
+                window.location.replace("http://127.0.0.1:5500/house-price-prediction.html");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert("An error occurred. Please try again.");
+        }
+    }
+
+    window.onload = function () {
+        document.querySelector('.cont_centrar').className = "cont_centrar cent_active";
+    }
+</script>
+</html>
